@@ -1,0 +1,453 @@
+{% extends 'base.html' %}
+
+{% block title %}Player Props Scroll View{% endblock %}
+
+{% block content %}
+<div class="player-props-wrapper">
+    <div class="player-props-container">
+        <div class="player-props-header">
+            <div class="player-prop-card-header player-image-header">Player</div>
+            <div class="player-prop-card-header event-info-header">Matchup</div>
+            <div class="player-prop-card-header prop-info-header">Prop</div>
+            <div class="player-prop-card-header l5-hr-header">L5</div>
+            <div class="player-prop-card-header l10-hr-header">L10</div>
+            <div class="player-prop-card-header l20-hr-header">L20</div>
+            <div class="player-prop-card-header l30-hr-header">L30</div>
+            <div class="player-prop-card-header season-hr-header">Season</div>
+            <div class="player-prop-card-header h2h-hr-header">H2H</div>
+            <div class="player-prop-card-header hot-streak-header">🔥</div>
+        </div>
+
+        <div class="player-props-list">
+            <!-- Dynamically generated player prop cards -->
+            {% for player_prop, event, player, home_team_abbr, away_team_abbr in player_props %}
+                <div class="player-prop-card">
+                    <div class="player-prop-images">
+                        <!-- Player image circle -->
+                        <div class="player-image">
+                            <img src="https://cdn.nba.com/headshots/nba/latest/260x190/{{ player.id }}.png" alt="Player Image">
+                        </div>
+                    </div>
+                    <div class="player-prop-info">
+                        <!-- Display event and player prop information -->
+                        <p class="event-info">
+                            {% if player.team_id == event.home_team_id %}
+                                {{ home_team_abbr }} vs. {{ away_team_abbr }}
+                            {% else %}
+                                {{ away_team_abbr }} @ {{ home_team_abbr }}
+                            {% endif %}
+                            - {{ event.formatted_start_time }}
+                        </p>
+                        <p class="prop-info">
+                            <strong>{{ player.full_name }}</strong> –
+                            {% if player_prop.outcome == 'Over' %}
+                                O
+                            {% elif player_prop.outcome == 'Under' %}
+                                U
+                            {% endif %}
+                            {{ player_prop.line }}
+                            {{ market_key_stats_mapping[player_prop.market] if player_prop.market in market_key_stats_mapping else player_prop.market }}
+                        </p>
+                        <!-- Hit Rate Percentages -->
+                    </div>
+<!--                    <div class="odds-item">-->
+<!--                        <div class="bookmaker-logo">-->
+
+<!--                        </div>-->
+<!--                        <p>-100</p>-->
+<!--                    </div>-->
+                    <div class="hit-rate-stats-row">
+                        <div class="l5-hr {% if player_prop.last_five_games_hit_rate is none %}grey-box{% elif player_prop.last_five_games_hit_rate > 0.8 %}green-box{% elif player_prop.last_five_games_hit_rate > 0.5 %}yellow-box{% else %}red-box{% endif %}">
+                            <p class="l5-hr-text">
+                                {% if player_prop.last_five_games_hit_rate is not none %}
+<!--                                    {{ int(player_prop.last_five_games_hit_rate * 100) }}%-->
+                                    {{ player_prop.last_five_games_hits }}/5
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </p>
+                        </div>
+
+                        <div class="l10-hr {% if player_prop.last_ten_games_hit_rate is none %}grey-box{% elif player_prop.last_ten_games_hit_rate > 0.8 %}green-box{% elif player_prop.last_ten_games_hit_rate > 0.5 %}yellow-box{% else %}red-box{% endif %}">
+                            <p class="l10-hr-text">
+                                {% if player_prop.last_ten_games_hit_rate is not none %}
+<!--                                    {{ int(player_prop.last_ten_games_hit_rate * 100) }}%-->
+                                        {{ player_prop.last_ten_games_hits }}/10
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </p>
+                        </div>
+
+                        <div class="l20-hr {% if player_prop.last_twenty_games_hit_rate is none %}grey-box{% elif player_prop.last_twenty_games_hit_rate > 0.8 %}green-box{% elif player_prop.last_twenty_games_hit_rate > 0.5 %}yellow-box{% else %}red-box{% endif %}">
+                            <p class="l20-hr-text">
+                                {% if player_prop.last_twenty_games_hit_rate is not none %}
+<!--                                    {{ int(player_prop.last_twenty_games_hit_rate * 100) }}%-->
+                                    {{ player_prop.last_twenty_games_hits }}/20
+
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </p>
+                        </div>
+
+                        <div class="l30-hr {% if player_prop.last_thirty_games_hit_rate is none %}grey-box{% elif player_prop.last_thirty_games_hit_rate > 0.8 %}green-box{% elif player_prop.last_thirty_games_hit_rate > 0.5 %}yellow-box{% else %}red-box{% endif %}">
+                            <p class="l30-hr-text">
+                                {% if player_prop.last_thirty_games_hit_rate is not none %}
+<!--                                    {{ int(player_prop.last_thirty_games_hit_rate * 100) }}%-->
+                                        {{ player_prop.last_thirty_games_hits }}/30
+
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </p>
+                        </div>
+
+                        <div class="season-hr {% if player_prop.season_hit_rate is none %}grey-box{% elif player_prop.season_hit_rate > 0.8 %}green-box{% elif player_prop.season_hit_rate > 0.5 %}yellow-box{% else %}red-box{% endif %}">
+                            <p class="season-hr-text">
+                                {% if player_prop.season_hit_rate is not none %}
+<!--                                    {{ int(player_prop.season_hit_rate * 100) }}%-->
+                                    {{ player_prop.season_hits }}/{{ player_prop.season_games }}
+
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </p>
+                        </div>
+
+                        <div class="h2h-hr {% if player_prop.head_to_head_hit_rate is none %}grey-box{% elif player_prop.head_to_head_hit_rate > 0.8 %}green-box{% elif player_prop.head_to_head_hit_rate > 0.5 %}yellow-box{% else %}red-box{% endif %}">
+                            <p class="h2h-hr-text">
+                                {% if player_prop.head_to_head_hit_rate is not none %}
+<!--                                    {{ int(player_prop.head_to_head_hit_rate * 100) }}%-->
+                                    {{ player_prop.head_to_head_hits }}/{{ player_prop.head_to_head_matchups }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </p>
+                        </div>
+
+                        <div class="hot-streak {% if player_prop.hot_streak is none or player_prop.hot_streak == 0 %}grey-box{% elif player_prop.hot_streak > 15 %}brightest-orange{% elif player_prop.hot_streak > 10 %}brighter-orange{% elif player_prop.hot_streak > 5 %}bright-orange{% elif player_prop.hot_streak > 0 %}dull-orange{% endif %}">
+                            <p class="hot-streak-text">
+                                {% if player_prop.hot_streak is not none and player_prop.hot_streak >= 0 %}
+                                    {{ player_prop.hot_streak }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="player-props-filters-container">
+        <div class="filters-header">
+            <h3>Filters</h3>
+        </div>
+        <div class="game-filter">
+            <label for="game-select">Select Game:</label>
+            <select id="game-select" onchange="window.location.href=this.value">
+                <option value="/nba-player-props" {% if not selected_game_id %}selected{% endif %}>All Games</option>
+                {% for game in available_games %}
+                    <option value="/nba-player-props?game_id={{ game.id }}" {% if selected_game_id == game.id %}selected{% endif %}>
+                        {{ game.home_team_abbr }} vs {{ game.away_team_abbr }} - {{ game.formatted_start_time }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+
+<style>
+
+    .odds-item {
+    display: flex; /* This will align the items side by side */
+    align-items: center; /* This vertically aligns the items in the center (optional) */
+}
+
+
+    .bookmaker-logo {
+        height: 35px;
+        width: 35px;
+        background-color: white;
+        margin-left: 30px;
+
+            margin-right: 10px; /* Optional: adds space between the div and p tag */
+
+    }
+
+    .bookmaker-logo img {
+            width: 50px; /* Adjust the width of the image */
+            height: auto; /* Maintain aspect ratio */
+        }
+
+    /* Reset margin and padding for the whole page to prevent scrolling */
+
+    .player-props-wrapper {
+    display: flex;
+    height: 90vh;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.player-props-container {
+    flex: 3;
+    border: 1px;
+    padding: 10px;
+    box-sizing: border-box;
+    margin-top: -10px;
+    margin-right: 10px;
+    position: relative; /* Position relative to allow fixed header */
+}
+
+
+    .player-props-filters-container {
+        flex: 1;
+        border: 1px solid white;
+        padding: 10px;
+        box-sizing: border-box;
+        margin-left: 10px;
+    }
+
+    /* Styling for the list of player prop cards */
+    .player-props-list {
+    display: flex;
+    flex-direction: column;
+    /* gap: 10px; */
+    max-height: 82.75vh; /* Adjust max-height to fit the layout */
+    overflow-y: auto; /* Enable scrolling */
+    margin-top: 10px; /* Space to avoid overlapping with the header */
+}
+
+    /* Styling for individual player prop cards */
+    .player-prop-card {
+        background-color: #212122;
+        display: flex;
+        align-items: center;
+        height: 60px; /* Placeholder height for the card */
+        border-radius: 0px; /* Slight border radius */
+        border: 1px solid #555; /* Subtle border to make the cards stand out */
+        padding: 10px;
+    }
+
+    /* Wrapper for player and team images */
+    .player-prop-images {
+        display: flex;
+        position: relative;
+    }
+
+    /* Player image styling */
+    .player-image {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid #fff;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        margin-left: 10px; /* Add this line to move the player image to the right */
+    }
+
+    .player-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .player-prop-info {
+        display: flex;
+        flex-direction: column;
+        margin-left: 20px; /* Add spacing between the player image and the text */
+        margin-top: 5px;
+        margin-bottom: 4px;
+        font-family: Arial, sans-serif; /* Set font to Arial */
+     }
+
+    .event-info {
+        font-size: 14px; /* Smaller font size */
+        font-weight: normal; /* Remove bold styling */
+        margin-bottom: 1px;
+        font-family: Arial, sans-serif;
+    }
+
+    .prop-info {
+        font-size: 15px;
+        font-family: Arial, sans-serif; /* Ensure prop info also uses Arial */
+        margin-top: 4px; /* Adjust this value as needed to move it up */
+    }
+
+        /* Updated styling for the hit rate stats row */
+    .hit-rate-stats-row {
+        display: flex;
+        margin-left: auto; /* Push the hit rate boxes to the far right */
+        margin-right: 5px;
+        gap: 10px; /* Equal padding between the squares */
+    }
+
+    /* Default styling for hit rate boxes */
+    .hit-rate-stats-row div {
+        width: 55px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        font-size: 12px;
+        font-family: Arial, sans-serif;
+        color: white;
+    }
+
+    /* Box colors for different hit rates */
+    .green-box {
+        border: 3px solid rgb(7, 211, 7);
+        background-color: #111f15;
+        box-shadow: 0px 4px 10px rgb(64, 255, 0);  /* A subtle shadow below the header */
+    }
+    .green-box p {
+        font-size: 14px;
+        color: rgb(7, 211, 7);
+    }
+
+    .yellow-box {
+        border: 3px solid yellow;
+        background-color: #545423;
+        box-shadow: 0px 4px 10px rgb(217, 255, 0);  /* A subtle shadow below the header */
+
+    }
+    .yellow-box p {
+        font-size: 14px;
+        color: yellow;
+    }
+
+    .red-box {
+        border: 3px solid red;
+        background-color: #3f1f1f;
+        box-shadow: 0px 4px 10px rgb(255, 0, 0);  /* A subtle shadow below the header */
+
+    }
+    .red-box p {
+        font-size: 14px;
+        color: red;
+    }
+
+    .grey-box {
+        border: 3px solid grey;
+        background-color: #333;
+    }
+    .grey-box p {
+        font-size: 14px;
+        color: grey;
+    }
+
+    .dull-orange {
+    border: 3px solid #cc7a00; /* Dull orange border */
+    background-color: #4d2e00; /* Dull orange background */
+        box-shadow: 0px 4px 10px rgb(255, 191, 0);  /* A subtle shadow below the header */
+}
+
+.bright-orange {
+    border: 3px solid #ff9900; /* Bright orange border */
+    background-color: #663d00; /* Bright orange background */
+    box-shadow: 0px 4px 10px rgb(255, 180, 0);  /* A subtle shadow below the header */
+
+}
+
+.brighter-orange {
+    border: 3px solid #ffb84d; /* Brighter orange border */
+    background-color: #804c00; /* Brighter orange background */
+    box-shadow: 0px 4px 10px rgb(255, 162, 0);  /* A subtle shadow below the header */
+
+}
+
+.brightest-orange {
+    border: 3px solid #ffcc66; /* Brightest orange border */
+    background-color: #995c00; /* Brightest orange background */
+    box-shadow: 0px 4px 10px rgb(255, 140, 0);  /* A subtle shadow below the header */
+
+}
+
+
+
+/* Styling for the header row */
+.player-props-header {
+    display: flex;
+    align-items: center;
+    background-color: #2b2c2f;
+    color: white;
+    padding: 10px;
+    /* border-radius: 8px; */
+    font-weight: bold;
+    border: 1px solid #555;
+    position: sticky; /* Keep the header fixed at the top */
+    top: 0; /* Stay at the top of the container */
+    z-index: 1; /* Ensure the header is above the scrollable content */
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.2);  /* A subtle shadow below the header */
+
+}
+
+
+.player-prop-card-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    padding: 5px 10px;
+}
+
+/* Individual column sizes to match the player prop card layout */
+.player-image-header {
+    width: 60px;
+    text-align: left;
+}
+
+.event-info-header {
+    flex: 2;
+    text-align: left;
+}
+
+.prop-info-header {
+    flex: 1;
+    text-align: left;
+}
+
+.l5-hr-header,
+.l10-hr-header,
+.l20-hr-header,
+.l30-hr-header,
+.season-hr-header,
+.h2h-hr-header,
+.hot-streak-header {
+    width: 50px;
+    text-align: center;
+}
+
+.filters-header {
+    margin-bottom: 20px;
+    color: white;
+}
+
+.game-filter {
+    margin-bottom: 20px;
+}
+
+.game-filter label {
+    display: block;
+    margin-bottom: 8px;
+    color: white;
+}
+
+.game-filter select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    background-color: #333;
+    color: white;
+    border: 1px solid #555;
+}
+
+.game-filter select option {
+    background-color: #333;
+    color: white;
+}
+</style>
+
+{% endblock %}

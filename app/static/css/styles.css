@@ -1,0 +1,52 @@
+/* Apply Roboto Mono font to the whole page */
+body {
+    font-family: 'Roboto Mono', monospace;
+    background-color: #0d0d0e; /* Dark grey background */
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+
+/* Style the header */
+header {
+    background-color: #0d0d0e; /* Dark grey header */
+    padding: 15px 20px;
+    border-bottom: 2px solid #444; /* Subtle distinction with bottom border */
+}
+
+/* Header content */
+.header-content {
+    display: flex;
+    align-items: center;
+}
+
+/* Header title with some boldness */
+.header-title {
+    font-size: 20px;
+    font-weight: 700; /* Bold text */
+    margin: 0;
+    color: white;
+}
+
+/* Main content area */
+main {
+    padding: 20px;
+}
+
+/* Additional styling for content if needed */
+h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 18px;
+}
+
+
+
+
+
+
+
+

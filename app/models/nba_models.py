@@ -1,0 +1,317 @@
+# nba_models.py
+
+from app.extensions import db
+
+
+class Team(db.Model):
+    id = db.Column(db.Integer, primary_key=True)  # NBA ID
+    name = db.Column(db.String, nullable=False)
+    abbreviation = db.Column(db.String(3), nullable=False)
+
+
+class Player(db.Model):
+    id = db.Column(db.Integer, primary_key=True)  # NBA ID
+    last_name = db.Column(db.String, nullable=False)
+    first_name = db.Column(db.String, nullable=False)
+    full_name = db.Column(db.String, nullable=False)
+    team_id = db.Column(db.Integer, db.ForeignKey("team.id"))
+    jersey_number = db.Column(db.String)
+    position = db.Column(db.String)
+    height = db.Column(db.String)
+    weight = db.Column(db.String)
+    college = db.Column(db.String)
+    country = db.Column(db.String)
+    draft_year = db.Column(db.Integer)
+    draft_round = db.Column(db.Integer)
+    draft_number = db.Column(db.Integer)
+    on_roster = db.Column(db.Boolean, nullable=False)
+
+
+# Team Box Scores
+
+
+class TeamBoxScoreTraditional(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    season_year = db.Column(db.String(7), nullable=False)
+    season_type = db.Column(db.String, nullable=False)
+    playoff_round = db.Column(db.Integer)
+    team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
+    opponent_team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
+    game_id = db.Column(db.String, nullable=False)  # NBA ID
+    game_date = db.Column(db.String, nullable=False)    # "09/28/2004"
+    away_game = db.Column(db.Boolean, nullable=False)
+    win_loss = db.Column(db.String(1), nullable=False)
+    period = db.Column(db.Integer, nullable=False)
+    minutes_played = db.Column(db.Float, nullable=False)
+    field_goals_made = db.Column(db.Integer, nullable=False)
+    field_goals_attempted = db.Column(db.Integer, nullable=False)
+    field_goal_percentage = db.Column(db.Float, nullable=False)
+    three_point_field_goals_made = db.Column(db.Integer, nullable=False)
+    three_point_field_goals_attempted = db.Column(db.Integer, nullable=False)
+    three_point_field_goal_percentage = db.Column(db.Float, nullable=False)
+    free_throws_made = db.Column(db.Integer, nullable=False)
+    free_throws_attempted = db.Column(db.Integer, nullable=False)
+    free_throw_percentage = db.Column(db.Float, nullable=False)
+    offensive_rebounds = db.Column(db.Integer, nullable=False)
+    defensive_rebounds = db.Column(db.Integer, nullable=False)
+    rebounds = db.Column(db.Integer, nullable=False)
+    assists = db.Column(db.Integer, nullable=False)
+    turnovers = db.Column(db.Integer, nullable=False)
+    steals = db.Column(db.Integer, nullable=False)
+    blocks = db.Column(db.Integer, nullable=False)
+    block_attempts = db.Column(db.Integer, nullable=False)
+    personal_fouls = db.Column(db.Integer, nullable=False)
+    personal_fouls_drawn = db.Column(db.Integer, nullable=False)
+    points = db.Column(db.Integer, nullable=False)
+    plus_minus = db.Column(db.Integer, nullable=False)
+
+
+class TeamBoxScoreAdvanced(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    season_year = db.Column(db.String(7), nullable=False)
+    season_type = db.Column(db.String, nullable=False)
+    playoff_round = db.Column(db.Integer)
+    team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
+    opponent_team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
+    game_id = db.Column(db.String, nullable=False)
+    game_date = db.Column(db.String, nullable=False)
+    away_game = db.Column(db.Boolean, nullable=False)
+    win_loss = db.Column(db.String(1), nullable=False)
+    period = db.Column(db.Integer, nullable=False)
+    minutes_played = db.Column(db.Float, nullable=False)
+    offensive_rating = db.Column(db.Float, nullable=False)
+    defensive_rating = db.Column(db.Float, nullable=False)
+    net_rating = db.Column(db.Float, nullable=False)
+    assist_percentage = db.Column(db.Float, nullable=False)
+    assist_turnover_ratio = db.Column(db.Float, nullable=False)
+    assist_ratio = db.Column(db.Float, nullable=False)
+    offensive_rebound_percentage = db.Column(db.Float, nullable=False)
+    defensive_rebound_percentage = db.Column(db.Float, nullable=False)
+    rebound_percentage = db.Column(db.Float, nullable=False)
+    turnover_percentage = db.Column(db.Float, nullable=False)
+    effective_field_goal_percentage = db.Column(db.Float, nullable=False)
+    true_shooting_percentage = db.Column(db.Float, nullable=False)
+    pace = db.Column(db.Float, nullable=False)
+    player_impact_estimate = db.Column(db.Float, nullable=False)
+
+
+class TeamBoxScoreMiscellaneous(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    season_year = db.Column(db.String(7), nullable=False)
+    season_type = db.Column(db.String, nullable=False)
+    playoff_round = db.Column(db.Integer)
+    team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
+    opponent_team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
+    game_id = db.Column(db.String, nullable=False)
+    game_date = db.Column(db.String, nullable=False)
+    away_game = db.Column(db.Boolean, nullable=False)
+    win_loss = db.Column(db.String(1), nullable=False)
+    period = db.Column(db.Integer, nullable=False)
+    minutes_played = db.Column(db.Float, nullable=False)
+    points_off_turnovers = db.Column(db.Integer, nullable=False)
+    second_chance_points = db.Column(db.Integer, nullable=False)
+    fast_break_points = db.Column(db.Integer, nullable=False)
+    points_in_paint = db.Column(db.Integer, nullable=False)
+
+
+class TeamBoxScoreScoring(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    season_year = db.Column(db.String(7), nullable=False)
+    season_type = db.Column(db.String, nullable=False)
+    playoff_round = db.Column(db.Integer)
+    team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
+    opponent_team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
+    game_id = db.Column(db.String, nullable=False)
+    game_date = db.Column(db.String, nullable=False)
+
+    away_game = db.Column(db.Boolean, nullable=False)
+    win_loss = db.Column(db.String(1), nullable=False)
+    period = db.Column(db.Integer, nullable=False)
+    minutes_played = db.Column(db.Float, nullable=False)
+    percent_field_goals_attempted_two_pointers = db.Column(db.Float, nullable=False)
+    percent_field_goals_attempted_three_pointers = db.Column(db.Float, nullable=False)
+    percent_points_two_pointers = db.Column(db.Float, nullable=False)
+    percent_points_mid_range = db.Column(db.Float, nullable=False)
+    percent_points_three_pointers = db.Column(db.Float, nullable=False)
+    percent_points_fast_break = db.Column(db.Float, nullable=False)
+    percent_points_free_throws = db.Column(db.Float, nullable=False)
+    percent_points_off_turnovers = db.Column(db.Float, nullable=False)
+    percent_points_in_paint = db.Column(db.Float, nullable=False)
+    percent_two_point_field_goals_made_assisted = db.Column(db.Float, nullable=False)
+    percent_two_point_field_goals_made_unassisted = db.Column(db.Float, nullable=False)
+    percent_three_point_field_goals_made_assisted = db.Column(db.Float, nullable=False)
+    percent_three_point_field_goals_made_unassisted = db.Column(
+        db.Float, nullable=False
+    )
+    percent_field_goals_made_assisted = db.Column(db.Float, nullable=False)
+    percent_field_goals_made_unassisted = db.Column(db.Float, nullable=False)
+
+
+# Player Box Scores
+
+
+class PlayerBoxScoreTraditional(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    season_year = db.Column(db.String(7), nullable=False)
+    season_type = db.Column(db.String, nullable=False)
+    playoff_round = db.Column(db.Integer)
+    player_id = db.Column(db.Integer, db.ForeignKey("player.id"), nullable=False)
+    team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
+    opponent_team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
+    game_id = db.Column(db.String, nullable=False)
+    game_date = db.Column(db.String, nullable=False)
+    away_game = db.Column(db.Boolean, nullable=False)
+    win_loss = db.Column(db.String(1), nullable=False)
+    period = db.Column(db.Integer, nullable=False)
+    minutes_played = db.Column(db.Float, nullable=False)
+    field_goals_made = db.Column(db.Integer, nullable=False)
+    field_goals_attempted = db.Column(db.Integer, nullable=False)
+    field_goal_percentage = db.Column(db.Float, nullable=False)
+    three_point_field_goals_made = db.Column(db.Integer, nullable=False)
+    three_point_field_goals_attempted = db.Column(db.Integer, nullable=False)
+    three_point_field_goal_percentage = db.Column(db.Float, nullable=False)
+    free_throws_made = db.Column(db.Integer, nullable=False)
+    free_throws_attempted = db.Column(db.Integer, nullable=False)
+    free_throw_percentage = db.Column(db.Float, nullable=False)
+    offensive_rebounds = db.Column(db.Integer, nullable=False)
+    defensive_rebounds = db.Column(db.Integer, nullable=False)
+    rebounds = db.Column(db.Integer, nullable=False)
+    assists = db.Column(db.Integer, nullable=False)
+    steals = db.Column(db.Integer, nullable=False)
+    blocks = db.Column(db.Integer, nullable=False)
+    block_attempts = db.Column(db.Integer, nullable=False)
+    turnovers = db.Column(db.Integer, nullable=False)
+    personal_fouls = db.Column(db.Integer, nullable=False)
+    personal_fouls_drawn = db.Column(db.Integer, nullable=False)
+    points = db.Column(db.Integer, nullable=False)
+    plus_minus = db.Column(db.Integer, nullable=False)
+    nba_fantasy_points = db.Column(db.Float, nullable=False)
+
+
+class PlayerBoxScoreAdvanced(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    season_year = db.Column(db.String(7), nullable=False)
+    season_type = db.Column(db.String, nullable=False)
+    playoff_round = db.Column(db.Integer)
+    player_id = db.Column(db.Integer, db.ForeignKey("player.id"), nullable=False)
+    team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
+    opponent_team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
+    game_id = db.Column(db.String, nullable=False)
+    game_date = db.Column(db.String, nullable=False)
+    away_game = db.Column(db.Boolean, nullable=False)
+    win_loss = db.Column(db.String(1), nullable=False)
+    period = db.Column(db.Integer, nullable=False)
+    minutes_played = db.Column(db.Float, nullable=False)
+    offensive_rating = db.Column(db.Float, nullable=False)
+    defensive_rating = db.Column(db.Float, nullable=False)
+    net_rating = db.Column(db.Float, nullable=False)
+    assist_percentage = db.Column(db.Float, nullable=False)
+    assist_turnover_ratio = db.Column(db.Float, nullable=False)
+    assist_ratio = db.Column(db.Float, nullable=False)
+    offensive_rebound_percentage = db.Column(db.Float, nullable=False)
+    defensive_rebound_percentage = db.Column(db.Float, nullable=False)
+    rebound_percentage = db.Column(db.Float, nullable=False)
+    turnover_ratio = db.Column(db.Float, nullable=False)
+    effective_field_goal_percentage = db.Column(db.Float, nullable=False)
+    true_shooting_percentage = db.Column(db.Float, nullable=False)
+    usage_percentage = db.Column(db.Float, nullable=False)
+    pace = db.Column(db.Float, nullable=False)
+    player_impact_estimate = db.Column(db.Float, nullable=False)
+
+
+class PlayerBoxScoreMiscellaneous(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    season_year = db.Column(db.String(7), nullable=False)
+    season_type = db.Column(db.String, nullable=False)
+    playoff_round = db.Column(db.Integer)
+    player_id = db.Column(db.Integer, db.ForeignKey("player.id"), nullable=False)
+    team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
+    opponent_team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
+    game_id = db.Column(db.String, nullable=False)
+    game_date = db.Column(db.String, nullable=False)
+
+    away_game = db.Column(db.Boolean, nullable=False)
+    win_loss = db.Column(db.String(1), nullable=False)
+    period = db.Column(db.Integer, nullable=False)
+    minutes_played = db.Column(db.Float, nullable=False)
+    points_off_turnovers = db.Column(db.Integer, nullable=False)
+    second_chance_points = db.Column(db.Integer, nullable=False)
+    fast_break_points = db.Column(db.Integer, nullable=False)
+    points_in_paint = db.Column(db.Integer, nullable=False)
+    opponent_points_off_turnovers = db.Column(db.Integer, nullable=False)
+    opponent_second_chance_points = db.Column(db.Integer, nullable=False)
+    opponent_fast_break_points = db.Column(db.Integer, nullable=False)
+    opponent_points_in_paint = db.Column(db.Integer, nullable=False)
+
+
+class PlayerBoxScoreScoring(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    season_year = db.Column(db.String(7), nullable=False)
+    season_type = db.Column(db.String, nullable=False)
+    playoff_round = db.Column(db.Integer)
+    player_id = db.Column(db.Integer, db.ForeignKey("player.id"), nullable=False)
+    team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
+    opponent_team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
+    game_id = db.Column(db.String, nullable=False)
+    game_date = db.Column(db.String, nullable=False)
+
+    away_game = db.Column(db.Boolean, nullable=False)
+    win_loss = db.Column(db.String(1), nullable=False)
+    period = db.Column(db.Integer, nullable=False)
+    minutes_played = db.Column(db.Float, nullable=False)
+    percent_field_goals_attempted_two_pointers = db.Column(db.Float, nullable=False)
+    percent_field_goals_attempted_three_pointers = db.Column(db.Float, nullable=False)
+    percent_points_two_pointers = db.Column(db.Float, nullable=False)
+    percent_points_mid_range = db.Column(db.Float, nullable=False)
+    percent_points_three_pointers = db.Column(db.Float, nullable=False)
+    percent_points_fast_break = db.Column(db.Float, nullable=False)
+    percent_points_free_throws = db.Column(db.Float, nullable=False)
+    percent_points_off_turnovers = db.Column(db.Float, nullable=False)
+    percent_points_in_paint = db.Column(db.Float, nullable=False)
+    percent_two_point_field_goals_made_assisted = db.Column(db.Float, nullable=False)
+    percent_two_point_field_goals_made_unassisted = db.Column(db.Float, nullable=False)
+    percent_three_point_field_goals_made_assisted = db.Column(db.Float, nullable=False)
+    percent_three_point_field_goals_made_unassisted = db.Column(
+        db.Float, nullable=False
+    )
+    percent_field_goals_made_assisted = db.Column(db.Float, nullable=False)
+    percent_field_goals_made_unassisted = db.Column(db.Float, nullable=False)
+
+
+class PlayerBoxScoreRebounding(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    player_id = db.Column(db.Integer, db.ForeignKey("player.id"), nullable=False)
+    game_date = db.Column(db.String, nullable=False)
+
+    contested_defensive_rebounds = db.Column(db.Integer, nullable=False)
+    contested_defensive_rebound_percentage = db.Column(db.Float, nullable=False)
+    defensive_rebound_chances = db.Column(db.Integer, nullable=False)
+    defensive_rebound_chance_percentage = db.Column(db.Float, nullable=False)
+    deferred_defensive_rebound_chances = db.Column(db.Integer, nullable=False)
+    adjusted_defensive_rebound_chance_percentage = db.Column(db.Float, nullable=False)
+    average_defensive_rebound_distance = db.Column(db.Float, nullable=False)
+    
+    contested_offensive_rebounds = db.Column(db.Integer, nullable=False)
+    contested_offensive_rebound_percentage = db.Column(db.Float, nullable=False)
+    offensive_rebound_chances = db.Column(db.Integer, nullable=False)
+    offensive_rebound_chance_percentage = db.Column(db.Float, nullable=False)
+    deferred_offensive_rebound_chances = db.Column(db.Integer, nullable=False)
+    adjusted_offensive_rebound_chance_percentage = db.Column(db.Float, nullable=False)
+    average_offensive_rebound_distance = db.Column(db.Float, nullable=False)
+
+
+class PlayerBoxScorePassing(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    player_id = db.Column(db.Integer, db.ForeignKey("player.id"), nullable=False)
+    game_date = db.Column(db.String, nullable=False)
+
+    passes_made = db.Column(db.Integer, nullable=False)
+    passes_received = db.Column(db.Integer, nullable=False)
+    ft_assists = db.Column(db.Integer, nullable=True) # ????
+    secondary_assists = db.Column(db.Integer, nullable=False)
+    potential_assists = db.Column(db.Integer, nullable=False)
+    assist_points_created = db.Column(db.Integer, nullable=False)
+    assist_to_pass_percentage = db.Column(db.Float, nullable=False)
+    adjusted_assist_to_pass_percentage = db.Column(db.Float, nullable=False)
+    
+
